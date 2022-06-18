@@ -78,7 +78,7 @@ export default defineComponent({
     const renderDefaultNode = () => (
       <>
         <div class={cls.tableBodyCellDisplay.value}>{valueDisplay.value}</div>
-        <div class={cls.tableBodyCellCsontent.value}>
+        <div class={cls.tableBodyCellContent.value}>
           {allowSlot.value &&
             renderContent('cellAppend', undefined, {
               params: { ...props.item },

@@ -18,18 +18,18 @@ import { CheckTag as TCheckTag } from '../tag';
 import CalendarCellItem from './calendar-cell';
 
 // 组件相关类型
-import { CalendarCell } from './type';
+import { TdCalendarProps, CalendarCell } from './type';
 import { CalendarRange, YearMonthOption, ModeOption, CellEventOption } from './interface';
 
 // 组件逻辑
 export default defineComponent({
   name: 'TCalendar',
   props: { ...props },
-  setup(props, { slots }) {
+  setup(props: TdCalendarProps, { slots }) {
     const renderContent = useContent();
     const { t, global } = useConfig(COMPONENT_NAME);
     // 组件内部状态管理
-    const { state, toToday, checkDayVisibled } = useState(props);
+    const { state, toToday, checkDayVisible } = useState(props);
 
     // 样式
     const cls = useCalendarClass(props, state);
@@ -57,7 +57,7 @@ export default defineComponent({
         to: v1,
       };
     });
-    function checkMonthAndYearSelecterDisabled(year: number, month: number): boolean {
+    function checkMonthAndYearSelectDisabled(year: number, month: number): boolean {
       let disabled = false;
       if (rangeFromTo.value && rangeFromTo.value.from && rangeFromTo.value.to) {
         const beginYear = dayjs(rangeFromTo.value.from).year();
@@ -102,7 +102,7 @@ export default defineComponent({
         }
 
         for (let i = begin; i <= end; i++) {
-          const disabled = checkMonthAndYearSelecterDisabled(i, state.curSelectedMonth);
+          const disabled = checkMonthAndYearSelectDisabled(i, state.curSelectedMonth);
           re.push({
             value: i,
             label: t(global.value.yearSelection, { year: i }),
@@ -120,7 +120,7 @@ export default defineComponent({
       monthSelectOptionList: computed<YearMonthOption[]>(() => {
         const re: YearMonthOption[] = [];
         for (let i = FIRST_MONTH_OF_YEAR; i <= LAST_MONTH_OF_YEAR; i++) {
-          const disabled = checkMonthAndYearSelecterDisabled(state.curSelectedYear, i);
+          const disabled = checkMonthAndYearSelectDisabled(state.curSelectedYear, i);
           re.push({
             value: i,
             label: t(global.value.monthSelection, { month: i }),
@@ -330,7 +330,7 @@ export default defineComponent({
             <tr class={cls.tableHeadRow.value}>
               {cellColHeaders.value.map(
                 (item, index) =>
-                  checkDayVisibled(item.num) && (
+                  checkDayVisible(item.num) && (
                     <th class={cls.tableHeadCell.value}>
                       {Array.isArray(props.week)
                         ? props.week[index]

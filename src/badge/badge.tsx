@@ -2,13 +2,14 @@ import { defineComponent, computed } from 'vue';
 import props from './props';
 import { useTNodeJSX } from '../hooks/tnode';
 import { useConfig } from '../hooks/useConfig';
+import { TdBadgeProps } from './type';
 
 export default defineComponent({
   name: 'TBadge',
 
   props: { ...props },
 
-  setup(props) {
+  setup(props: TdBadgeProps) {
     const renderTNodeJSX = useTNodeJSX();
 
     /** 内容计算相关逻辑 start */

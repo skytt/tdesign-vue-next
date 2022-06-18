@@ -19,7 +19,7 @@ export default defineComponent({
 
   props: { ...props },
 
-  setup(props, { slots }) {
+  setup(props: TdCascaderProps, { slots }) {
     const disabled = useFormDisabled();
     const COMPONENT_NAME = usePrefixClass('cascader');
     const classPrefix = usePrefixClass();

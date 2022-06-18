@@ -4,11 +4,12 @@ import { usePrefixClass, useCommonClassName } from '../hooks/useConfig';
 import { useTNodeJSX } from '../hooks/tnode';
 import TLoading from '../loading';
 import props from './props';
+import { TdCardProps } from './type';
 
 export default defineComponent({
   name: 'TCard',
   props,
-  setup(props, { slots }) {
+  setup(props: TdCardProps, { slots }) {
     const renderTNodeJSX = useTNodeJSX();
     const COMPONENT_NAME = usePrefixClass('card');
     const { SIZE } = useCommonClassName();
@@ -106,7 +107,11 @@ export default defineComponent({
     // 封面区域渲染逻辑
     const renderCover = () => {
       const textCover = typeof props.cover === 'string';
-      return <div class={coverCls.value}>{textCover ? <img src={props.cover}></img> : renderTNodeJSX('cover')}</div>;
+      return (
+        <div class={coverCls.value}>
+          {textCover ? <img src={props.cover as string}></img> : renderTNodeJSX('cover')}
+        </div>
+      );
     };
 
     return () => (

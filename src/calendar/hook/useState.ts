@@ -44,7 +44,7 @@ export function useState(props: TdCalendarProps) {
     state.curDate = value ? dayjs(value) : createDefaultCurDate();
   }
 
-  function checkDayVisibled(day: number) {
+  function checkDayVisible(day: number) {
     let re = true;
     if (!state.isShowWeekend) {
       re = day !== 6 && day !== 7;
@@ -98,6 +98,6 @@ export function useState(props: TdCalendarProps) {
   return {
     state,
     toToday,
-    checkDayVisibled,
+    checkDayVisible,
   };
 }

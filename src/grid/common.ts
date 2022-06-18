@@ -1,13 +1,11 @@
-import { ref } from 'vue';
+import { ref, InjectionKey } from 'vue';
 import isObject from 'lodash/isObject';
 import { TdColProps, TdRowProps } from './type';
 import { calcSize } from '../utils/responsive';
 import { useListener } from '../hooks/useListener';
 import { isServer } from '../utils/dom';
 
-export interface RowProviderType {
-  gutter: TdRowProps['gutter'];
-}
+export const rowInjectionKey: InjectionKey<{ gutter: TdRowProps['gutter'] }> = Symbol('rowProvider');
 
 /**
  * rowSizeHook

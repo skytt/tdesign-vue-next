@@ -19,12 +19,6 @@ import { TdAnchorProps } from './type';
 import { usePrefixClass, useCommonClassName } from '../hooks/useConfig';
 import { AnchorInjectionKey } from './constants';
 
-export interface Anchor extends ComponentPublicInstance {
-  scrollContainer: ANCHOR_CONTAINER;
-  // 执行scrollTo设置的flag, 用来禁止执行handleScroll
-  handleScrollLock: boolean;
-}
-
 export default defineComponent({
   name: 'TAnchor',
   props,
@@ -197,6 +191,7 @@ export default defineComponent({
       }
       getScrollContainer();
     });
+
     provide(
       AnchorInjectionKey,
       reactive({

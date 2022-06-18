@@ -4,12 +4,13 @@ import { CollapseValue, TdCollapseProps, CollapsePanelValue } from './type';
 import useVModel from '../hooks/useVModel';
 import { useTNodeJSX } from '../hooks/tnode';
 import { usePrefixClass } from '../hooks/useConfig';
+import { collapseProviderInjectionKey } from './constant';
 
 export default defineComponent({
   name: 'TCollapse',
   props,
 
-  setup(props: TdCollapseProps, context) {
+  setup(props: TdCollapseProps) {
     const componentName = usePrefixClass('collapse');
     const borderlessClass = usePrefixClass('-border-less');
     const renderTNodeJSX = useTNodeJSX();
@@ -39,10 +40,31 @@ export default defineComponent({
       let index = 0;
       return () => index++;
     })();
-    provide('collapseValue', collapseValue);
-    provide('updateCollapseValue', updateCollapseValue);
-    provide('collapseProps', toRefs(props));
-    provide('getUniqId', getUniqId);
+
+    provide(
+      collapseProviderInjectionKey,
+      computed(() => {
+        const {
+          defaultExpandAll,
+          disabled: disableAll,
+          expandIconPlacement,
+          expandOnRowClick,
+          expandIcon: expandIconAll,
+        } = props;
+
+        return {
+          collapseValue: collapseValue.value,
+          updateCollapseValue,
+          getUniqId,
+          defaultExpandAll,
+          disableAll,
+          expandIconPlacement,
+          expandOnRowClick,
+          expandIconAll,
+        };
+      }),
+    );
+
     return () => {
       const nodes = renderTNodeJSX('default');
       return <div class={classes.value}>{nodes}</div>;

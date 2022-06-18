@@ -2,14 +2,11 @@ import { computed, defineComponent, nextTick, onUpdated, ref, watch } from 'vue'
 import { CloseIcon } from 'tdesign-icons-vue-next';
 import { useConfig, usePrefixClass } from '../hooks/useConfig';
 import { isServer, addClass, removeClass } from '../utils/dom';
-import { Button as TButton } from '../button';
 import props from './props';
-import { FooterButton, DrawerCloseContext } from './type';
+import { DrawerCloseContext } from './type';
 import TransferDom from '../utils/transfer-dom';
 import { useAction } from '../dialog/hooks';
 import { useTNodeJSX, useContent } from '../hooks/tnode';
-
-type FooterButtonType = 'confirm' | 'cancel';
 
 export default defineComponent({
   name: 'TDrawer',
@@ -34,7 +31,7 @@ export default defineComponent({
       closeDrawer({ trigger: 'cancel', e });
     };
     const { getConfirmBtn, getCancelBtn } = useAction({ confirmBtnAction, cancelBtnAction });
-    const drawerEle = ref<HTMLElement | null>(null);
+    const drawerRef = ref<HTMLElement | null>(null);
     const drawerClasses = computed(() => {
       return [
         't-drawer',
@@ -71,7 +68,7 @@ export default defineComponent({
     });
 
     const parentNode = computed<HTMLElement>(() => {
-      return drawerEle.value && (drawerEle.value.parentNode as HTMLElement);
+      return drawerRef.value && (drawerRef.value.parentNode as HTMLElement);
     });
 
     const modeAndPlacement = computed<string>(() => {
@@ -107,26 +104,7 @@ export default defineComponent({
         parentNode.value.style.cssText = parentNode.value.style.cssText.replace(/margin:.+;/, '');
       }
     };
-    const getDefaultBtn = (btnType: FooterButtonType, btnApi: FooterButton) => {
-      const isCancel = btnType === 'cancel';
-      const clickAction = isCancel ? cancelBtnAction : confirmBtnAction;
-      const theme = isCancel ? 'default' : 'primary';
-      const isApiObject = typeof btnApi === 'object';
-      return (
-        <TButton
-          theme={theme}
-          onClick={clickAction}
-          props={isApiObject ? btnApi : {}}
-          class={`${COMPONENT_NAME.value}-${btnType}`}
-        >
-          {btnApi && typeof btnApi === 'object' ? btnApi.content : btnApi}
-        </TButton>
-      );
-    };
-    const isUseDefault = (btnApi: FooterButton) => {
-      const baseTypes = ['string', 'object'];
-      return Boolean(btnApi && baseTypes.includes(typeof btnApi));
-    };
+
     // locale 全局配置，插槽，props，默认值，决定了按钮最终呈现
     const getDefaultFooter = () => {
       // this.getConfirmBtn is a function of useAction
@@ -149,6 +127,7 @@ export default defineComponent({
         </div>
       );
     };
+
     watch(
       modeAndPlacement,
       () => {
@@ -194,58 +173,33 @@ export default defineComponent({
       updatePushMode();
     });
 
-    return {
-      COMPONENT_NAME,
-      renderTNodeJSX,
-      renderContent,
-      drawerEle,
-      drawerClasses,
-      wrapperStyles,
-      modeAndPlacement,
-      wrapperClasses,
-      handlePushMode,
-      updatePushMode,
-      getDefaultBtn,
-      isUseDefault,
-      getDefaultFooter,
-      handleCloseBtnClick,
-      handleWrapperClick,
-      onKeyDown,
-      confirmBtnAction,
-      cancelBtnAction,
-      closeDrawer,
-    };
-  },
-
-  render() {
-    const { COMPONENT_NAME, renderContent, renderTNodeJSX } = this;
-    if (this.destroyOnClose && !this.visible) return;
-    const defaultCloseBtn = <CloseIcon class="t-submenu-icon"></CloseIcon>;
-    const body = renderContent('body', 'default');
-    const headerContent = renderTNodeJSX('header');
-    const defaultFooter = this.getDefaultFooter();
-    return (
-      <div
-        ref="drawerEle"
-        class={this.drawerClasses}
-        style={{ zIndex: this.zIndex }}
-        onKeydown={this.onKeyDown}
-        v-transfer-dom={this.attach}
-        {...this.$attrs}
-        tabindex={0}
-      >
-        {this.showOverlay && <div class={`${COMPONENT_NAME}__mask`} onClick={this.handleWrapperClick} />}
-        <div class={this.wrapperClasses} style={this.wrapperStyles}>
-          {headerContent && <div class={`${COMPONENT_NAME}__header`}>{headerContent}</div>}
-          {this.closeBtn && (
-            <div class={`${COMPONENT_NAME}__close-btn`} onClick={this.handleCloseBtnClick}>
-              {renderTNodeJSX('closeBtn', defaultCloseBtn)}
-            </div>
-          )}
-          <div class={[`${COMPONENT_NAME}__body`, 'narrow-scrollbar']}>{body}</div>
-          {this.footer && <div class={`${COMPONENT_NAME}__footer`}>{renderTNodeJSX('footer', defaultFooter)}</div>}
+    return () => {
+      if (props.destroyOnClose && !props.visible) return;
+      const body = renderContent('body', 'default');
+      const headerContent = renderTNodeJSX('header');
+      const defaultFooter = getDefaultFooter();
+      return (
+        <div
+          ref={drawerRef}
+          class={drawerClasses.value}
+          style={{ zIndex: props.zIndex }}
+          onKeydown={onKeyDown}
+          v-transfer-dom={props.attach}
+          tabindex={0}
+        >
+          {props.showOverlay && <div class={`${COMPONENT_NAME}__mask`} onClick={handleWrapperClick} />}
+          <div class={wrapperClasses.value} style={wrapperStyles.value}>
+            {headerContent && <div class={`${COMPONENT_NAME}__header`}>{headerContent}</div>}
+            {props.closeBtn && (
+              <div class={`${COMPONENT_NAME}__close-btn`} onClick={handleCloseBtnClick}>
+                {renderTNodeJSX('closeBtn', <CloseIcon class="t-submenu-icon"></CloseIcon>)}
+              </div>
+            )}
+            <div class={[`${COMPONENT_NAME}__body`, 'narrow-scrollbar']}>{body}</div>
+            {props.footer && <div class={`${COMPONENT_NAME}__footer`}>{renderTNodeJSX('footer', defaultFooter)}</div>}
+          </div>
         </div>
-      </div>
-    );
+      );
+    };
   },
 });

@@ -5,6 +5,7 @@ import props from './breadcrumb-item-props';
 import Tooltip from '../tooltip/index';
 import { isNodeOverflow } from '../utils/dom';
 import { usePrefixClass } from '../hooks/useConfig';
+import { TdBreadcrumbItemProps } from './type';
 
 interface LocalTBreadcrumb {
   separator: (() => void) | string;
@@ -25,7 +26,7 @@ const localTBreadcrumbOrigin: LocalTBreadcrumb = {
 export default defineComponent({
   name: 'TBreadcrumbItem',
   props,
-  setup(props, { slots, attrs }) {
+  setup(props: TdBreadcrumbItemProps, { slots }) {
     const breadcrumbText = ref<HTMLElement>();
     const localTBreadcrumb = inject('tBreadcrumb', localTBreadcrumbOrigin);
     const themeClassName = ref(localTBreadcrumb?.theme);
@@ -54,6 +55,7 @@ export default defineComponent({
     const separatorContent = separatorPropContent || separatorSlot || (
       <ChevronRightIcon {...{ color: 'rgba(0,0,0,.3)' }} />
     );
+
     const { proxy } = getCurrentInstance();
     const bindEvent = (e: MouseEvent) => {
       if (!props.disabled) {
@@ -76,28 +78,23 @@ export default defineComponent({
         textClass.push(disableClass.value);
       }
 
-      const listeners = {
-        onClick: (e: MouseEvent) => {
-          props.onClick?.({ e });
-        },
-      };
       const textContent = (
         <span ref={breadcrumbText} {...{ class: maxLengthClass.value, style: maxWithStyle.value }}>
           {slots.default()}
         </span>
       );
-      let itemContent = <span {...{ class: textClass, ...listeners }}>{textContent}</span>;
+      let itemContent = <span class={textClass}>{textContent}</span>;
 
       if ((props.href || props.to) && !props.disabled) {
         textClass.push(linkClass.value);
         itemContent = (
-          <a class={textClass} href={props.href} target={props.target} {...listeners} onClick={bindEvent}>
+          <a class={textClass} href={props.href} target={props.target} onClick={bindEvent}>
             {textContent}
           </a>
         );
       }
       return (
-        <div class={itemClass} {...attrs}>
+        <div class={itemClass}>
           {isCutOff.value ? <Tooltip content={() => slots?.default()}>{itemContent}</Tooltip> : itemContent}
           <span class={separatorClass.value}>
             {typeof separatorContent === 'function' ? separatorContent() : separatorContent}

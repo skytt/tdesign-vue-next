@@ -3,12 +3,13 @@ import props from './avatar-group-props';
 import Avatar from './avatar';
 import { useContent, useTNodeJSX } from '../hooks/tnode';
 import { usePrefixClass } from '../hooks/useConfig';
+import { TdAvatarGroupProps } from './type';
 
 export default defineComponent({
   name: 'TAvatarGroup',
   props,
 
-  setup(props) {
+  setup(props: TdAvatarGroupProps) {
     provide('avatarGroup', props);
     const renderContent = useContent();
     const renderTNodeJSX = useTNodeJSX();

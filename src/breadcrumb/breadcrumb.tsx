@@ -1,13 +1,13 @@
 import { defineComponent, reactive, provide, toRefs } from 'vue';
 import props from './props';
 import BreadcrumbItem from './breadcrumb-item';
-import { TdBreadcrumbItemProps } from './type';
+import { TdBreadcrumbProps } from './type';
 import { useTNodeJSX } from '../hooks/tnode';
 
 export default defineComponent({
   name: 'TBreadcrumb',
   props,
-  setup(props, { slots }) {
+  setup(props: TdBreadcrumbProps, { slots }) {
     const { separator, theme, maxItemWidth } = toRefs(props);
     provide(
       'tBreadcrumb',
@@ -22,7 +22,7 @@ export default defineComponent({
     return () => {
       let content = renderTNodeJSX('default');
       if (props.options && props.options.length) {
-        content = props.options.map((option: TdBreadcrumbItemProps, index: number) => (
+        content = props.options.map((option, index: number) => (
           <BreadcrumbItem {...option} key={index}>
             {option.default || option.content}
           </BreadcrumbItem>

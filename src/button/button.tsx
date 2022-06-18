@@ -5,12 +5,13 @@ import useRipple from '../hooks/useRipple';
 import { useFormDisabled } from '../form/hooks';
 import { usePrefixClass, useCommonClassName } from '../hooks/useConfig';
 import { useTNodeJSX, useContent } from '../hooks/tnode';
+import { TdButtonProps } from './type';
 
 export default defineComponent({
   name: 'TButton',
   inheritAttrs: false,
   props,
-  setup(props, { attrs }) {
+  setup(props: TdButtonProps, { attrs }) {
     const renderTNodeJSX = useTNodeJSX();
     const renderContent = useContent();
     const COMPONENT_NAME = usePrefixClass('button');

@@ -6,6 +6,7 @@ import useRipple from '../hooks/useRipple';
 import { useContent } from '../hooks/tnode';
 import { usePrefixClass } from '../hooks/useConfig';
 import { CheckboxGroupInjectionKey } from './constants';
+import { TdCheckboxProps } from './type';
 
 export default defineComponent({
   name: 'TCheckbox',
@@ -14,7 +15,7 @@ export default defineComponent({
     needRipple: Boolean,
   },
 
-  setup(props) {
+  setup(props: TdCheckboxProps & { needRipple: boolean }) {
     const labelRef = ref<HTMLElement>();
     if (props.needRipple) {
       useRipple(labelRef);

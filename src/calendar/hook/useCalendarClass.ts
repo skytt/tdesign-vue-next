@@ -77,7 +77,7 @@ export function useCalendarCellClass() {
   const tableBodyCellDisplay = computed<string[]>(() => {
     return [`${prefixClass.value}__table-body-cell-display`];
   });
-  const tableBodyCellCsontent = computed<string[]>(() => {
+  const tableBodyCellContent = computed<string[]>(() => {
     return [`${prefixClass.value}__table-body-cell-content`];
   });
 
@@ -85,6 +85,6 @@ export function useCalendarCellClass() {
     tableBodyCell,
     tableBodyCell4Now,
     tableBodyCellDisplay,
-    tableBodyCellCsontent,
+    tableBodyCellContent,
   };
 }

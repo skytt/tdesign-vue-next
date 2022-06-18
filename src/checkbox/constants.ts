@@ -1,5 +1,5 @@
 import { InjectionKey } from 'vue';
-import { TdCheckboxProps } from '@src/checkbox/type';
+import { TdCheckboxProps } from './type';
 
 export const CheckboxGroupInjectionKey: InjectionKey<{
   name: string;

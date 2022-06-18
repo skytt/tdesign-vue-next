@@ -1,50 +1,46 @@
 import { defineComponent, ref, computed, inject, Ref, toRefs, Transition } from 'vue';
 import props from './collapse-panel-props';
 import FakeArrow from '../common-components/fake-arrow';
-import { CollapseValue, TdCollapsePanelProps } from './type';
+import { TdCollapsePanelProps } from './type';
 import { useTNodeJSX } from '../hooks/tnode';
 import { usePrefixClass } from '../hooks/useConfig';
 import useCollapseAnimation from './useCollapseAnimation';
+import { collapseProviderInjectionKey } from './constant';
 
 export default defineComponent({
   name: 'TCollapsePanel',
   props,
-  setup(props: TdCollapsePanelProps, context) {
+  setup(props: TdCollapsePanelProps) {
     const renderTNodeJSX = useTNodeJSX();
     const componentName = usePrefixClass('collapse-panel');
     const disableClass = usePrefixClass('is-disabled');
     const clickableClass = usePrefixClass('is-clickable');
     const transitionClass = usePrefixClass('slide-down');
     const { value, disabled, destroyOnCollapse, expandIcon } = toRefs(props);
-    const collapseValue: Ref<CollapseValue> = inject('collapseValue');
-    const updateCollapseValue: Function = inject('updateCollapseValue');
-    const getUniqId: Function = inject('getUniqId', () => undefined, false);
-    const {
-      defaultExpandAll,
-      disabled: disableAll,
-      expandIconPlacement,
-      expandOnRowClick,
-      expandIcon: expandIconAll,
-    } = inject('collapseProps');
+    const collapseProvider = inject(collapseProviderInjectionKey);
+    const { getUniqId, updateCollapseValue } = collapseProvider.value;
+
     const innerValue = value.value || getUniqId();
-    const showExpandIcon = computed(() => (expandIcon.value === undefined ? expandIconAll.value : expandIcon.value));
-    if (defaultExpandAll.value) {
+    const showExpandIcon = computed(() =>
+      expandIcon.value === undefined ? collapseProvider.value.expandIconAll : expandIcon.value,
+    );
+    if (collapseProvider.value.defaultExpandAll) {
       updateCollapseValue(innerValue);
     }
     const { beforeEnter, enter, afterEnter, beforeLeave, leave, afterLeave } = useCollapseAnimation();
     const headRef = ref<HTMLElement>();
-    const isDisabled = computed(() => disabled.value || disableAll.value);
+    const isDisabled = computed(() => disabled.value || collapseProvider.value.disableAll);
     const isActive = computed(() =>
-      collapseValue.value instanceof Array
-        ? collapseValue.value.includes(innerValue)
-        : collapseValue.value === innerValue,
+      collapseProvider.value.collapseValue instanceof Array
+        ? collapseProvider.value.collapseValue.includes(innerValue)
+        : collapseProvider.value.collapseValue === innerValue,
     );
     const classes = computed(() => {
       return [componentName.value, { [disableClass.value]: isDisabled.value }];
     });
     const handleClick = (e: MouseEvent) => {
       const canExpand =
-        (expandOnRowClick.value && e.target === headRef.value) ||
+        (collapseProvider.value.expandOnRowClick && e.target === headRef.value) ||
         (e.target as Element).getAttribute('name') === 'arrow';
       if (canExpand && !isDisabled.value) {
         updateCollapseValue(innerValue);
@@ -66,16 +62,20 @@ export default defineComponent({
       const cls = [
         `${componentName.value}__header`,
         {
-          [clickableClass.value]: expandOnRowClick.value && !isDisabled.value,
+          [clickableClass.value]: collapseProvider.value.expandOnRowClick && !isDisabled.value,
         },
       ];
       return (
         <div ref={headRef} class={cls} onClick={handleClick}>
-          {showExpandIcon.value && expandIconPlacement.value === 'left' ? renderIcon(expandIconPlacement.value) : null}
+          {showExpandIcon.value && collapseProvider.value.expandIconPlacement === 'left'
+            ? renderIcon(collapseProvider.value.expandIconPlacement)
+            : null}
           {renderTNodeJSX('header')}
           {renderBlank()}
           {renderTNodeJSX('headerRightContent')}
-          {showExpandIcon.value && expandIconPlacement.value === 'right' ? renderIcon(expandIconPlacement.value) : null}
+          {showExpandIcon.value && collapseProvider.value.expandIconPlacement === 'right'
+            ? renderIcon(collapseProvider.value.expandIconPlacement)
+            : null}
         </div>
       );
     };

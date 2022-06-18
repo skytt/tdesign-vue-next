@@ -4,11 +4,12 @@ import { copyText } from '../utils/clipboard';
 import Message from '../message/plugin';
 import props from './anchor-target-props';
 import { useConfig, usePrefixClass } from '../hooks/useConfig';
+import { TdAnchorTargetProps } from './type';
 
 export default defineComponent({
   name: 'TAnchorTarget',
   props,
-  setup(props, { slots }) {
+  setup(props: TdAnchorTargetProps, { slots }) {
     const { global, classPrefix } = useConfig('anchor');
     const COMPONENT_NAME = usePrefixClass('anchor');
     /**

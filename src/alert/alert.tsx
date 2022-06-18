@@ -12,11 +12,12 @@ import { SlotReturnValue } from '../common';
 import { useIcon } from '../hooks/icon';
 import { useConfig, usePrefixClass } from '../hooks/useConfig';
 import { useTNodeJSX } from '../hooks/tnode';
+import { TdAlertProps } from './type';
 
 export default defineComponent({
   name: 'TAlert',
   props,
-  setup(props) {
+  setup(props: TdAlertProps) {
     const { global, classPrefix } = useConfig('alert');
     const COMPONENT_NAME = usePrefixClass('alert');
     const renderTNodeJSX = useTNodeJSX();

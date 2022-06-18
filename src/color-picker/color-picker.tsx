@@ -7,13 +7,14 @@ import ColorPanel from './panel';
 import DefaultTrigger from './trigger';
 import { TdColorContext } from './interfaces';
 import { useBaseClassName } from './hooks';
+import { TdColorPickerProps } from './type';
 
 export default defineComponent({
   name: 'TColorPicker',
   props: {
     ...props,
   },
-  setup(props) {
+  setup(props: TdColorPickerProps) {
     const baseClassName = useBaseClassName();
     const visible = ref(false);
     const setVisible = (value: boolean) => (visible.value = value);

@@ -3,25 +3,21 @@ import { ANCHOR_SHARP_REGEXP } from './utils';
 import props from './anchor-item-props';
 import { usePrefixClass, useCommonClassName } from '../hooks/useConfig';
 import { AnchorInjectionKey } from './constants';
-
-const localProps = {
-  ...props,
-  href: {
-    type: String,
-    required: true,
-    validator(v: string): boolean {
-      return ANCHOR_SHARP_REGEXP.test(v);
-    },
-  },
-};
+import { TdAnchorItemProps } from './type';
 
 export default defineComponent({
   name: 'TAnchorItem',
-  inject: {
-    tAnchor: { default: undefined },
+  props: {
+    ...props,
+    href: {
+      type: String,
+      required: true,
+      validator(v: string): boolean {
+        return ANCHOR_SHARP_REGEXP.test(v);
+      },
+    },
   },
-  props: localProps,
-  setup(props, { slots }) {
+  setup(props: TdAnchorItemProps, { slots }) {
     const anchor = inject(AnchorInjectionKey, undefined);
     const CLASSNAME_PREFIX = usePrefixClass('anchor__item');
     const { STATUS } = useCommonClassName();
